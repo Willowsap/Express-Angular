@@ -2,7 +2,7 @@ import passport from 'passport';
 import User, { IUser } from '../models/user.model';
 import { NextFunction, Request, Response } from 'express';
 
-export default class AuthenticationController {
+export default class AuthController {
   register = (req: Request, res: Response, next: NextFunction) => {
     if (!req.body.name || !req.body.email || !req.body.password) {
       return res
@@ -31,9 +31,7 @@ export default class AuthenticationController {
         .status(400)
         .json({"message": "All fields required"});
     }
-    console.log("pre authenticate")
     passport.authenticate('local', (error: any, user: any, info: any) => {
-      console.log("in authenticate")
       if (user) {
         const token = user.generateJwt();
         res

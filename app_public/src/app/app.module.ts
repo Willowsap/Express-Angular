@@ -1,4 +1,4 @@
-import { HttpClientModule } from "@angular/common/http";
+import { HTTP_INTERCEPTORS, HttpClientModule } from "@angular/common/http";
 import { NgModule } from "@angular/core";
 import { AppComponent } from "./app.component";
 import { BrowserModule } from "@angular/platform-browser";
@@ -13,8 +13,9 @@ import { HomeComponent } from "./home/home.component";
 import { CatComponent } from "./cat/cat.component";
 import { HeaderComponent } from "./header/header.component";
 import { AddCatComponent } from "./add-cat/add-cat.component";
-import { RegisterComponent } from "./register/register.component";
-import { LoginComponent } from "./login/login.component";
+import { RegisterComponent } from "./auth/register/register.component";
+import { LoginComponent } from "./auth/login/login.component";
+import { AuthInterceptor } from "./auth/auth.interceptor";
 
 @NgModule({
     declarations: [
@@ -38,6 +39,7 @@ import { LoginComponent } from "./login/login.component";
     ],
     bootstrap: [AppComponent],
     providers: [
+        { provide: HTTP_INTERCEPTORS, useClass: AuthInterceptor, multi: true },
         provideAnimationsAsync()
     ],
 })

@@ -3,13 +3,13 @@ import crypto from 'crypto';
 import jwt, { Jwt } from 'jsonwebtoken';
 
 export interface IUser extends Document {
-    email: string,
-    name: string,
-    hash: string,
-    salt: string,
-    setPassword: (pasword: string) => void,
-    validPassword: (pasword: string) => boolean,
-    generateJwt: () => Jwt,
+  email: string,
+  name: string,
+  hash: string,
+  salt: string,
+  setPassword: (pasword: string) => void,
+  validPassword: (pasword: string) => boolean,
+  generateJwt: () => Jwt,
 }
 
 const userSchema = new mongoose.Schema({
@@ -47,7 +47,7 @@ userSchema.methods.generateJwt = function () {
     _id: this._id,
     email: this.email,
     name: this.name,
-    exp: expiry.getTime() / 1000
+    exp: expiry.getTime()
   }, process.env.JWT_SECRET!);
 };
 

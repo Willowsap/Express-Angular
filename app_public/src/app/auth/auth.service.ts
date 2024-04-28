@@ -7,11 +7,14 @@ import { Observable, Subject } from "rxjs";
     'providedIn': 'root'
 })
 export default class AuthService {
-    API_URL = "http://localhost:3000/api/user/";
-    TOKEN_KEY = "token";
+    private API_URL = "http://localhost:3000/api/user/";
+    private TOKEN_KEY = "token";
 
-    user: User | null = null;
-    userListener: Subject<User | null> = new Subject();
+    private user: User | null = null;
+    private userListener: Subject<User | null> = new Subject();
+
+    private loggedIn: boolean = false;
+    private loggedInListener: Subject<boolean> = new Subject();
 
     constructor(private http: HttpClient) {}
 
@@ -30,7 +33,9 @@ export default class AuthService {
                     const token = response.token;
                     localStorage.setItem(this.TOKEN_KEY, token);
                     this.user = response.user;
+                    this.loggedIn = true;
                     this.userListener.next(this.user);
+                    this.loggedInListener.next(true);
                 }
             })
     }
@@ -49,13 +54,19 @@ export default class AuthService {
                     const token = response.token;
                     localStorage.setItem(this.TOKEN_KEY, token);
                     this.user = response.user;
+                    this.loggedIn = true;
                     this.userListener.next(this.user);
+                    this.loggedInListener.next(true);
                 }
             })
     }
 
     isLoggedIn(): boolean {
-        return this.user !== null;
+        return this.loggedIn;
+    }
+
+    getLoggedInListener(): Observable<boolean> {
+        return this.loggedInListener.asObservable();
     }
 
     getUser(): User | null {
@@ -72,7 +83,10 @@ export default class AuthService {
             const tokenPayload = JSON.parse(atob(token.split('.')[1]));
             // JWT expiration date is in seconds
             const expirationDate = new Date(tokenPayload.exp); 
-            if (new Date().getTime() > expirationDate.getTime()) {
+            console.log(tokenPayload);
+            console.log(expirationDate);
+            console.log(new Date());
+            if (new Date().getTime() < expirationDate.getTime()) {
                 this.retrieveUser(tokenPayload.email);
             }
         }
@@ -91,6 +105,12 @@ export default class AuthService {
     logout() {
         localStorage.removeItem(this.TOKEN_KEY);
         this.user = null;
+        this.loggedIn = false;
         this.userListener.next(null);
+        this.loggedInListener.next(false);
+    }
+
+    getToken() {
+        return localStorage.getItem(this.TOKEN_KEY) ?? "";
     }
 }

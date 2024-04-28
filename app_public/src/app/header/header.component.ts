@@ -1,5 +1,5 @@
 import { Component, OnInit } from "@angular/core";
-import AuthenticationService from "../services/auth.service";
+import AuthenticationService from "../auth/auth.service";
 import User from "../models/user.model";
 
 @Component({
@@ -15,8 +15,8 @@ export class HeaderComponent implements OnInit {
 
     ngOnInit(): void {
         this.isLoggedIn = this.authService.isLoggedIn();
-        this.authService.getUserListener().subscribe((user: User | null) => {
-            this.isLoggedIn = user !== null;
+        this.authService.getLoggedInListener().subscribe((loggedIn) => {
+            this.isLoggedIn = loggedIn;
             console.log(this.isLoggedIn)
         })
     }

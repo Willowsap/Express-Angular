@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { NgForm } from '@angular/forms';
-import AuthService from '../services/auth.service';
+import AuthService from '../auth.service';
 import { Router } from '@angular/router';
 
 @Component({
@@ -15,9 +15,9 @@ export class LoginComponent implements OnInit {
     private router: Router) {}
 
   ngOnInit() {
-    this.authService.getUserListener().subscribe(
-      (user) => {
-        if (user !== null) {
+    this.authService.getLoggedInListener().subscribe(
+      (loggedIn) => {
+        if (loggedIn) {
           this.router.navigate(['/']);
         }
       }
