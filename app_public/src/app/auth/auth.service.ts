@@ -81,25 +81,17 @@ export default class AuthService {
         const token = localStorage.getItem(this.TOKEN_KEY);
         if (token) {
             const tokenPayload = JSON.parse(atob(token.split('.')[1]));
-            // JWT expiration date is in seconds
-            const expirationDate = new Date(tokenPayload.exp); 
-            console.log(tokenPayload);
-            console.log(expirationDate);
-            console.log(new Date());
+            const expirationDate = new Date(tokenPayload.exp);
             if (new Date().getTime() < expirationDate.getTime()) {
-                this.retrieveUser(tokenPayload.email);
+                this.user = {
+                    email: tokenPayload.email,
+                    name: tokenPayload.name,
+                }
+                this.loggedIn = true;
+                this.userListener.next(this.user);
+                this.loggedInListener.next(true);
             }
         }
-    }
-
-    retrieveUser(email: string): void {
-        this.http.get<User | null>(this.API_URL + email)
-            .subscribe((user: User | null) => {
-                if (user) {
-                    this.user = user;
-                    this.userListener.next(user);
-                }
-            });
     }
 
     logout() {

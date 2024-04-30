@@ -8,16 +8,14 @@ import User from "../models/user.model";
     styleUrls: ['./header.component.css']
 })
 export class HeaderComponent implements OnInit {
-
     isLoggedIn = false;
-
     constructor(private authService: AuthenticationService) {}
 
     ngOnInit(): void {
         this.isLoggedIn = this.authService.isLoggedIn();
+        console.log(this.isLoggedIn)
         this.authService.getLoggedInListener().subscribe((loggedIn) => {
             this.isLoggedIn = loggedIn;
-            console.log(this.isLoggedIn)
         })
     }
 
